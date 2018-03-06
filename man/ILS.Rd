@@ -17,4 +17,3 @@ techniques are provided (F and Tuckey tests) to test differences in the testing 
 Taking into account the functional nature of data retrieved in analytical chemistry, applied physics and engineering (spectra, thermograms, etc.).
 ILS package provides a FDA approach for  functional Mandel's k and h statistics by  smoothing bootstrap resampling of distribution.
 }
-

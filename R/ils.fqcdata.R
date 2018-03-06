@@ -4,25 +4,29 @@
 #                                                                             #
 #  An R package for statistical in-line quality control.                      #
 #                                                                             #
-#  Written by: Miguel A. Flores Sanchez                                      #
+#  Written by: Miguel A. Flores Sanchez                                       #
 #              Professor of Mathematics Department                            #
-#              Escuela Politecnica Nacional, Ecuador                           #
+#              Escuela Politecnica Nacional, Ecuador                          #
 #              miguel.flores@epn.edu.ec                                       #
 #                                                                             #
 #-----------------------------------------------------------------------------#
 #-----------------------------------------------------------------------------#
-# Main function to create a 'lab.fqcd' object
+# Main function to create a 'ils.fqcdata' object
 #-----------------------------------------------------------------------------#
 ##' Functional Quality Control Data
 ##' 
-##' It Creates an object of class 'lab.fqcd' to perform statistical quality control. 
+##' It Creates an object of class 'ils.fqcd' to perform statistical quality control. 
 ##' This object is used to plot functional data.
-##' @aliases lab.fqcd 
-##' @param x A (m x p) matrix or data-frame. Alternatively an (m x p x n) array. 
-##' The m parameter is the number of curves, p defines the number of points observed in each curve, 
-##' and n is the number of replicates. 
-##' @param argvals  Argvals, by default: 1:p.
+##' @aliases ils.fqcdata 
+##' @param x A (n x m) matrix or data-frame. 
+##' The m is the number of points observed in each curve, 
+##' and n is the number of curves for each laboratory. 
+##' @param p the number of laboratories.
+##' @param index.laboratory is the laboratory index. The index.laboratory length should be equal a p 
+##' @param argvals  Argvals, by default: 1:m.
 ##' @param rangeval Range of discretization points, by default: range(argvals).
+##' @param names (optional) list with tree components: main an overall title, 
+##' xlab title for x axis and ylab title for y axis.
 ##' @export
 ##' @references 
 ##' \describe{
@@ -32,63 +36,56 @@
 ##'   "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
 ##' }
 ##' @examples
-##' \dontrun{
+
 ##' library(ILS)
-##' data(TG) 
+##' data(TG)
 ##' delta <- seq(from = 40 ,to = 850 ,length.out = 1000 )
-##' curves.fqcd <- lab.fqcd(TG, argvals = delta)
-##' windows()
-##' xlab <- "Temperature (0C)"
+##' fqcdata <- ils.fqcdata(TG, p = 7, argvals = delta)
+##' xlab <- "Temperature (C)"
 ##' ylab <- "Mass (%)"
 ##' main <- "TG curves obtained from calcium oxalate"
-##' p <- curves.fqcd$p
-##' col <- terrain.colors(p)
-##' plot(x = curves.fqcd, main, xlab, ylab,legend = FALSE,col = col)
-##' legend(45,70,c(paste("Lab",c(1:7))),
-##'       col = col,lty = 1, lwd = c(rep(1,7),2), cex = 0.7)
-##'       }
-lab.fqcd <- function(x, argvals = NULL, rangeval = NULL)
+##' plot(x = fqcdata, main = main, xlab=xlab, ylab=xlab,col = 1:7,legend = TRUE)
+
+ils.fqcdata <- function(x, p = NULL, index.laboratory = NULL, argvals = NULL, rangeval = NULL, 
+                        names = NULL)
 #.........................................................................
 {
-  if (!is.array(x) & !is.data.frame(x) & !is.matrix(x))
-    stop("object must be a array or a matrix or data.frame")
-
   
-  curves.fdata <- list()
-  
-  if (length(dim(x))==3){
-    m <- dim(x)[2] # quality characteristics
-    n <- dim(x)[1] # number of samples or observations
-    p <- dim(x)[3]       # # number of laboratories
-    oldClass(x) <- c("array")
-  } else{
-    m <- dim(x)[2] # quality characteristics
-    n <- 1 # number of samples or observations
-    p <- dim(x)[1]       # number of laboratories
-    oldClass(x) <- c("matrix")
-  }
+  if (!is.data.frame(x) & !is.matrix(x) & is.null(x))
+    stop("object must be a matrix or data.frame")
 
+  if (is.null(p))
+    stop("The number of laboratories should more than one")
+
+  if (p == 1)
+    stop("The number of laboratories should more than one")
+  
+  if (nrow(x) %% p != 0)
+  stop("The number of laboratories must be multiple of number the rows")
+  m <- dim(x)[2] # quality characteristics
+  n <- dim(x)[1]/p # number of samples or observations
+  
   if (is.null(argvals)) argvals <- seq(from = 1 ,to = m ,length.out = m )
   if (is.null(rangeval)) rangeval <- c(min(argvals),max(argvals))
   
-  for (i in 1:p){
-    if (length(dim(x))==3){
-       curves.fdata[[i]] <- fdata(mdata = x[,,i], argvals = argvals, rangeval = rangeval)
-    }else{
-      curves.fdata[[i]] <- fdata(mdata = x[i,], argvals = argvals, rangeval = rangeval)
-    }
-}
+  if (!is.null(index.laboratory )) 
+    {if (length(index.laboratory) != p)
+       stop("The index.laboratory length should be equal a p")}
+  else 
+  { index.laboratory <- paste("Lab",1:p)}
   
-  oldClass(curves.fdata) <- c("list.fdata") 
-  result <- list (curves = x, curves.fdata = curves.fdata, p = p, n = n, m = m)
+  ils.fdata <- fdata(mdata = x, argvals = argvals, rangeval = rangeval, names = names)
   
-  attr(result, "object.name") <-"data" 
-  attr(result, "type.data") <- "Functional Data List"
   
-  oldClass(result) <- c("lab.fqcd")
+  oldClass(x) <- class(x) 
+
+  result <- list (curves = as.matrix(x), ils.fdata = ils.fdata, 
+                  index.laboratory = index.laboratory, p = as.numeric(p), n = n, m = m)
+  
+  oldClass(result) <- c("ils.fqcdata")
   
    
   return(result)
   
-} # lab.fdata
+} # ils.fqcdata
 #.........................................................................

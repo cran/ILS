@@ -14,7 +14,7 @@ lab.qcs(x, ...)
 \method{summary}{lab.qcs}(object, ...)
 }
 \arguments{
-\item{x}{Object lab.qcd (Functional Quality Control Data)}
+\item{x}{Object lab.qcdata (Functional Quality Control Data)}
 
 \item{...}{Arguments passed to or from methods.}
 
@@ -28,10 +28,9 @@ This function is used to compute the requested statistics to be summarized and p
 
 library(ILS)
 data(Glucose)
-Glucose.qcd <- lab.qcd(Glucose)
-str(Glucose.qcd)
-Glucose.qcs <- lab.qcd(Glucose.qcd)
+Glucose.qcdata <- lab.qcdata(Glucose)
+str(Glucose.qcdata)
+Glucose.qcs <- lab.qcs(Glucose.qcdata)
 str(Glucose.qcs)
 summary(Glucose.qcs)
 }
-

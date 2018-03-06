@@ -12,14 +12,14 @@
 #-----------------------------------------------------------------------------#
 
 #
-#  Main function to create a 'lab.qcd' object
+#  Main function to create a 'lab.qcdata' object
 #
 ##' Quality Control Data
 ##' 
-##' It creates a 'lab.qcd' class object to perform the interlaboratory study. 
+##' It creates a 'lab.qcdata' class object to perform the interlaboratory study. 
 ##' This object is used to plot ILS data and more.
 ##' 
-##' @aliases lab.qcd 
+##' @aliases lab.qcdata 
 ##' @param data Matrix or data-frame that contains the data, replicate index, type of material, and the laboratory.
 ##' @param var.index Scalar with the column number corresponding to the observed variable (the critical to quality variable). 
 ##' Alternatively, a string with the name of a quality variable can be provided.
@@ -32,11 +32,11 @@
 ##' @examples
 ##' library(ILS)
 ##' data(Glucose)
-##' Glucose.qcd <- lab.qcd(Glucose)
-##' str(Glucose.qcd)
-##' summary(Glucose.qcd)
+##' Glucose.qcdata <- lab.qcdata(Glucose)
+##' str(Glucose.qcdata)
+##' summary(Glucose.qcdata)
 
-lab.qcd <- function(data, var.index=1,replicate.index  =  2, material.index  =  3,
+lab.qcdata <- function(data, var.index=1,replicate.index  =  2, material.index  =  3,
                     laboratory.index=4,  data.name = NULL) 
   #.........................................................................
 {
@@ -44,16 +44,24 @@ lab.qcd <- function(data, var.index=1,replicate.index  =  2, material.index  =  
   if (!is.matrix(data) & !is.data.frame(data))
     stop("object must be a matrix or data.frame")
   
-     result <- data[, c(var.index,replicate.index,material.index,laboratory.index)]   
-  names(result) <- c("x", "replicate","material","laboratory") 
+     result <- data[, c(var.index,replicate.index,material.index,
+                        laboratory.index)]   
+     
+     names(result) <- c("x", "replicate","material","laboratory") 
+     
+     result$replicate <- as.factor(result$replicate)
+     result$material <- as.factor(result$material)
+     result$laboratory <- as.factor(result$laboratory)
+     
 
+  
   if (is.null(data.name))
     data.name <- deparse(substitute(data))
   
   attr(result, "data.name") <- data.name
   
-  oldClass(result) <- c("lab.qcd", "data.frame") #cambie la clase del resultado.
+  oldClass(result) <- c("lab.qcdata", "data.frame") #cambie la clase del resultado.
   
   return(result)
-} # lab.qcd
+} # lab.qcdata
 #.........................................................................

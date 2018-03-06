@@ -32,4 +32,3 @@ st
   "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
 }
 }
-

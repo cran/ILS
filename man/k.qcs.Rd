@@ -3,7 +3,7 @@
 \name{k.qcs}
 \alias{k.qcs}
 \alias{k.qcs.default}
-\alias{k.qcs.lab.qcd}
+\alias{k.qcs.lab.qcdata}
 \title{Function to calcute the Mandel's k statistic}
 \usage{
 k.qcs(x, ...)
@@ -12,7 +12,7 @@ k.qcs(x, ...)
   material.index = 3, laboratory.index = 4, data.name = NULL,
   alpha = 0.05, ...)
 
-\method{k.qcs}{lab.qcd}(x, alpha = 0.05, ...)
+\method{k.qcs}{lab.qcdata}(x, alpha = 0.05, ...)
 }
 \arguments{
 \item{x}{an R object (used to select the method). See details.}
@@ -40,18 +40,17 @@ This function is used to compute the statistic k of Mandel.
 
 library(ILS)
 data(Glucose)
-Glucose.qcd <- lab.qcd(Glucose)
-str(Glucose.qcd)
-k<- k.qcs(Glucose.qcd, alpha = 0.005)
+Glucose.qcdata <- lab.qcdata(Glucose)
+str(Glucose.qcdata)
+k<- k.qcs(Glucose.qcdata, alpha = 0.005)
 summary(k)
 plot(k)
 }
 \references{
 \describe{
   \item{}{Wilrich Peter-T. (2013),  Critical values of Mandel's h and k, 
-  the Grubbs and the Cochram test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
+  the Grubbs and the Cochran test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
   \item{}{ASTM E 691 (1999), Standard practice for conducting an interlaboratory study 
   to determine the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA.}
 }
 }
-

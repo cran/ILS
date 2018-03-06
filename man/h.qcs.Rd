@@ -3,7 +3,7 @@
 \name{h.qcs}
 \alias{h.qcs}
 \alias{h.qcs.default}
-\alias{h.qcs.lab.qcd}
+\alias{h.qcs.lab.qcdata}
 \title{Function to estimate the univariate Mandel's  h statistic}
 \usage{
 h.qcs(x, ...)
@@ -12,7 +12,7 @@ h.qcs(x, ...)
   material.index = 3, laboratory.index = 4, data.name = NULL,
   alpha = 0.05, ...)
 
-\method{h.qcs}{lab.qcd}(x, alpha = 0.05, ...)
+\method{h.qcs}{lab.qcdata}(x, alpha = 0.05, ...)
 }
 \arguments{
 \item{x}{R object (used to select the method). See details.}
@@ -40,18 +40,17 @@ This function is used to compute the Mandel's h statistic.
 
 library(ILS)
 data(Glucose)
-Glucose.qcd <- lab.qcd(Glucose)
-str(Glucose.qcd)
-h<- h.qcs(Glucose.qcd, alpha = 0.005)
+Glucose.qcdata <- lab.qcdata(Glucose)
+str(Glucose.qcdata)
+h<- h.qcs(Glucose.qcdata, alpha = 0.005)
 summary(h)
 plot(h)
 }
 \references{
 \describe{
   \item{}{Wilrich Peter-T. (2013),  Critical values of Mandel's h and k, 
-  the Grubbs and the Cochram test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
+  the Grubbs and the Cochran test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
   \item{}{ASTM E 691 (1999), Standard practice for conducting an interlaboratory study 
   to determine the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA.}
 }
 }
-

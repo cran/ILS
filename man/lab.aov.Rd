@@ -3,7 +3,7 @@
 \name{lab.aov}
 \alias{lab.aov}
 \alias{lab.aov.default}
-\alias{lab.aov.lab.qcd}
+\alias{lab.aov.lab.qcdata}
 \title{Function to compute the AOV}
 \usage{
 lab.aov(x, ...)
@@ -12,10 +12,11 @@ lab.aov(x, ...)
   material.index = 3, laboratory.index = 4, data.name = NULL,
   level = 0.95, plot = FALSE, pages = 0, ...)
 
-\method{lab.aov}{lab.qcd}(x, level = 0.95, plot = FALSE, pages = 0, ...)
+\method{lab.aov}{lab.qcdata}(x, level = 0.95, plot = FALSE, pages = 0,
+  ...)
 }
 \arguments{
-\item{x}{Object lab.qcd.}
+\item{x}{Object lab.qcdata.}
 
 \item{...}{Arguments passed to or from methods.}
 
@@ -46,9 +47,9 @@ Function to compute the analysis of variance of ILS data, taking into account th
 \dontrun{
 library(ILS)
 data(Glucose)
-Glucose.qcd <- lab.qcd(Glucose)
-str(Glucose.qcd)
-lab.aov(Glucose.qcd,level = 0.95, plot = TRUE, pages = 1)
+Glucose.qcdata <- lab.qcdata(Glucose)
+str(Glucose.qcdata)
+lab.aov(Glucose.qcdata,level = 0.95, plot = TRUE, pages = 1)
 }
 }
 \references{
@@ -58,4 +59,3 @@ lab.aov(Glucose.qcd,level = 0.95, plot = TRUE, pages = 1)
   \item{}{Heyden, Y., Smeyers-Verbeke, J. (2007), Set-up and evaluation of interlaboratory studies. J. Chromatogr. A, 1158:158-167.}
 }
 }
-

@@ -20,56 +20,63 @@
 ##' This function is used to compute the requested statistics to be summarized and ploted.
 ##' 
 ## @aliases lab.qcs summary.lab.qcs print.lab.qcs
-##' @param x  Object lab.qcd (Functional Quality Control Data)
+##' @param x  Object lab.qcdata (Functional Quality Control Data)
 ##' @param ... Arguments passed to or from methods.
 ##' @export
 ##' @examples
 ##' 
 ##' library(ILS)
 ##' data(Glucose)
-##' Glucose.qcd <- lab.qcd(Glucose)
-##' str(Glucose.qcd)
-##' Glucose.qcs <- lab.qcd(Glucose.qcd)
+##' Glucose.qcdata <- lab.qcdata(Glucose)
+##' str(Glucose.qcdata)
+##' Glucose.qcs <- lab.qcs(Glucose.qcdata)
 ##' str(Glucose.qcs)
 ##' summary(Glucose.qcs)
 lab.qcs <- function(x, ...)
   #.........................................................................  
   {
-  if(is.null(x) || !inherits(x, "lab.qcd"))
-    stop("x must be an objects of class (or extending) 'lab.qcd'")
+  if(is.null(x) || !inherits(x, "lab.qcdata"))
+    stop("x must be an objects of class (or extending) 'lab.qcdata'")
   
   p <- length(unique(x$laboratory))
   m <- length(unique(x$material))
   n <- length(unique(x$replicate))
   material<-unique(x$material)
   laboratory<-unique(x$laboratory)
-  mean.i<-matrix(,nrow =p ,ncol =m )
-  s.i<-matrix(,nrow = p,ncol = m)
-  S_r<-vector()
-  S_R<-vector()
- 
-   for(i in 1:m)
-  {
-    ind<-x$material==material[i]
-   mean.i[,i]<- tapply(x$x[ind],x$laboratory[ind],mean)
-  s.i[,i] <- tapply(x$x[ind],x$laboratory[ind],sd)
-  S_r[i]<-sqrt(mean(s.i[,i]^2))
-  S_R[i]<-sqrt(var(mean.i[,i])+((n-1)/n)*S_r[i]^2)
   
-  }
+  stat.material <- data.frame(mean = vector(,length = m),
+                           S = vector(,length = m), 
+                           S_r = vector(,length = m), 
+                           S_B = vector(,length = m),
+                           S_R = vector(,length = m))
+  
+  statistics <- data.frame(laboratory = vector(,length = p*m),
+                           material = vector(,length = p*m), 
+                           mean.i = vector(,length = p*m), 
+                           s.i = vector(,length = p*m))
+  
+  data <- x$x
+  
+    statistics[,1] <- as.factor(rep(laboratory,each = m))
+    statistics[,2] <- as.factor(rep(material,p))
+    statistics[,3] <- c(tapply(data,list(x$material,x$laboratory),mean))
+    statistics[,4] <- c(tapply(data,list(x$material,x$laboratory),sd))
+    
+    stat.material[,1] <- tapply(statistics$mean.i,statistics$material,mean)
+    stat.material[,2] <- tapply(statistics$s.i,statistics$material,sd)
+    f.S_r <- function(s.i) {sqrt(mean(s.i^2))}
+    S_r <- stat.material[,3] <- tapply(statistics$s.i,statistics$material,f.S_r) 
+
+    S_B <- stat.material[,4] <- tapply(statistics$mean.i,statistics$material,sd)
+    stat.material[,5] <- sqrt(S_B^2 + ((n-1)/n)*S_r^2)
+
+    rownames(stat.material) <- material
  
- colnames(mean.i) <- material
- row.names(mean.i) <- laboratory
- colnames(s.i) <- material
- rownames(s.i) <-laboratory
- statistics <- data.frame(mean=apply(mean.i,2,mean),S=apply(mean.i,2,sd),
-                       S_r=S_r, S_R=S_R)
- statisticsL <- data.frame(mean = mean.i,sd = s.i)
- result <- list (lab.qcd = x, statistics =  statistics, p = p, n = n, m = m,
-                 mean.i = mean.i, S.i = s.i, statistics.Laboratory = statisticsL  ) 
+ result <- list (lab.qcdata = x, statistics.Laboratory = statistics, 
+                 statistics.material =  stat.material, p = p, n = n, m = m ) 
  oldClass(result)<-c("lab.qcs")
- attr(result, "object.name") <- "lab.qcs"
- attr(result, "type.data") <- "univariate"
+ attr(result, "object.name") <- attributes(x)$data.name
+ attr(result, "type.data") <- "lab.qcs"
  
 return(result)
 } # lab.qcs
@@ -77,7 +84,7 @@ return(result)
 
 ##' @rdname lab.qcs
 ##' @method print lab.qcs
-## @param x A \code{lab.qcd} object for which a print is desired.
+## @param x A \code{lab.qcs} object for which a print is desired.
 ##' @export
 print.lab.qcs <- function(x, ...) str(x,1)
 #.........................................................................
@@ -90,25 +97,40 @@ summary.lab.qcs <- function(object, ...)
 {
  
   
-  type.data <- attributes(object)$object.name
+  type.data <- attributes(object)$type.data
 
-  cat("\nSummary of material statistics:\n")
-  print(object$statistics)
-  cat("\nNumber of laboratories: ", object[[3]])
-  cat("\nNumber of materials: ", object[[5]])
-  cat("\nNumber of replicate: ", object[[4]])
+  cat("\nNumber of laboratories: ", object$p)
+  cat("\nNumber of materials: ", object$m)
+  cat("\nNumber of replicate: ", object$n)
   
   result <- switch(type.data, 
                   "lab.qcs" =  {
-                    cat("\nSummary for Laboratory:\n")
-                    print(object[[8]])
+                    cat("\nSummary for Laboratory (means):\n")
+                    st <- with(object$lab.qcdata, 
+                               tapply(x, 
+                                      list(material,
+                                           laboratory), mean))
+                    print(st)
+                    
+                    cat("\nSummary for Laboratory (Deviations):\n")
+                    st <- with(object$lab.qcdata, 
+                               tapply(x, 
+                                      list(material,
+                                           laboratory), sd))
+                    print(st)
+
+                    cat("\nSummary for Material:\n")
+                    print(object$statistics.material)
+                    
                     },
-                  "h.qcs" =   {  
+                  "h.qcs" =   {
+  
                     cat("\nCritical value: ", object[[7]])
                     cat("\nBeyond limits of control:", "\n")
                     print(object[[8]])
                   },
                   "k.qcs" ={
+  
                     cat("\nCritical value: ", object[[7]])
                     cat("\nBeyond limits of control:", "\n")
                     print(object[[8]])
@@ -129,7 +151,7 @@ summary.lab.qcs <- function(object, ...)
 ##' @references 
 ##' \describe{
 ##'   \item{}{Wilrich Peter-T. (2013),  Critical values of Mandel's h and k, 
-##'   the Grubbs and the Cochram test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
+##'   the Grubbs and the Cochran test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
 ##'   \item{}{ASTM E 691 (1999), Standard practice for conducting an interlaboratory study 
 ##'   to determine the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA.}
 ##' }
@@ -137,9 +159,9 @@ summary.lab.qcs <- function(object, ...)
 ##' 
 ##' library(ILS)
 ##' data(Glucose)
-##' Glucose.qcd <- lab.qcd(Glucose)
-##' str(Glucose.qcd)
-##' h<- h.qcs(Glucose.qcd, alpha = 0.005)
+##' Glucose.qcdata <- lab.qcdata(Glucose)
+##' str(Glucose.qcdata)
+##' h<- h.qcs(Glucose.qcdata, alpha = 0.005)
 ##' summary(h)
 ##' plot(h)
 
@@ -149,7 +171,7 @@ h.qcs <- function(x, ...) {
 
 ##' @rdname h.qcs
 ##' @method h.qcs default
-##' @inheritParams lab.qcd
+##' @inheritParams lab.qcdata
 ##' @param alpha The significance level (0.05 by default)
 ##' @param ... Arguments passed to or from methods.
 h.qcs.default <- function(x, var.index=1,replicate.index  =  2, material.index  =  3,
@@ -157,50 +179,56 @@ h.qcs.default <- function(x, var.index=1,replicate.index  =  2, material.index  
   {
   if (is.null(data.name)) data.name <- "Statistical Mandel h"
 
-    obj<-lab.qcd(data = x, var.index=var.index,replicate.index  =  replicate.index, 
+    obj<-lab.qcdata(data = x, var.index=var.index,replicate.index  =  replicate.index, 
                  material.index  =  material.index,
                  laboratory.index=laboratory.index,  data.name = data.name)
     
-    result<-h.qcs.lab.qcd(x = obj,  alpha = alpha)
+    result<-h.qcs.lab.qcdata(x = obj,  alpha = alpha)
     
   return(result)
 } #h.qcs
 
 ##' @rdname  h.qcs
-##' @method h.qcs lab.qcd
+##' @method h.qcs lab.qcdata
 ##' @inheritParams h.qcs.default
 ##' @export
-h.qcs.lab.qcd <- function(x, alpha = 0.05, ...)
+h.qcs.lab.qcdata <- function(x, alpha = 0.05, ...)
 {
+  
+  if(is.null(x) || !inherits(x, "lab.qcdata"))
+    stop("x must be an objects of class (or extending) 'lab.qcdata'")
+  
   data.name <- attributes(x)$data.name
   x.lab.qcs <- lab.qcs(x)
-  statistics <- x.lab.qcs[[2]]
-  mean.i <- x.lab.qcs[[6]]
-  p <- x.lab.qcs[[3]]
-  n <- x.lab.qcs[[4]]
-  m <- x.lab.qcs[[5]]
+  
+  statistics <- x.lab.qcs$statistics.material
+  mean.i <- x.lab.qcs$statistics.Laboratory$mean.i
+  p <- x.lab.qcs$p
+  n <- x.lab.qcs$n
+  m <- x.lab.qcs$m
+  
   hcrit <- (p-1)*qt((1-alpha/2),(p-2))/sqrt(p*(p-2+qt((1-alpha/2),(p-2))^2))
-  material <- row.names(x.lab.qcs[[2]])
+
+  material <- row.names(x.lab.qcs$statistics.material)
   laboratory <- unique(x.lab.qcs[[1]]$laboratory)
   h.i <- matrix(,nrow = p,ncol = m)
   for(i in 1:m)
   {
-    h.i[,i] <- (mean.i[,i]-statistics[i,1])/statistics[i,2]
+    ind <- x.lab.qcs$statistics.Laboratory$material==material[i]
+    h.i[,i] <- (mean.i[ind]-statistics$mean[i])/statistics$S[i]
   }
   
-  i <- 1
-  (mean.i[,i]-statistics[i,1])/statistics[i,2]
   
   
   colnames(h.i) <- material
   rownames(h.i) <- laboratory
-  violations <- h.i<=hcrit
-  result <- list (lab.qcd = x, lab.qcs = x.lab.qcs, p = p, n = n, m = m,
+  violations <- abs(h.i) <= hcrit
+  result <- list (lab.qcdata = x, lab.qcs = x.lab.qcs, p = p, n = n, m = m,
                   h = h.i, h.critial = hcrit, violations = violations, data.name = data.name ) 
   
   oldClass(result) <- c("lab.qcs")
-  attr(result, "object.name") <- "h.qcs"
-  attr(result, "type.data") <- "univariate"
+  attr(result, "object.name") <- data.name
+  attr(result, "type.data") <- "h.qcs"
   
   
   return(result)
@@ -217,7 +245,7 @@ h.qcs.lab.qcd <- function(x, alpha = 0.05, ...)
 ##' @references 
 ##' \describe{
 ##'   \item{}{Wilrich Peter-T. (2013),  Critical values of Mandel's h and k, 
-##'   the Grubbs and the Cochram test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
+##'   the Grubbs and the Cochran test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
 ##'   \item{}{ASTM E 691 (1999), Standard practice for conducting an interlaboratory study 
 ##'   to determine the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA.}
 ##' }
@@ -225,9 +253,9 @@ h.qcs.lab.qcd <- function(x, alpha = 0.05, ...)
 ##' 
 ##' library(ILS)
 ##' data(Glucose)
-##' Glucose.qcd <- lab.qcd(Glucose)
-##' str(Glucose.qcd)
-##' k<- k.qcs(Glucose.qcd, alpha = 0.005)
+##' Glucose.qcdata <- lab.qcdata(Glucose)
+##' str(Glucose.qcdata)
+##' k<- k.qcs(Glucose.qcdata, alpha = 0.005)
 ##' summary(k)
 ##' plot(k)
 k.qcs <- function(x, ...) {
@@ -236,7 +264,7 @@ k.qcs <- function(x, ...) {
 
 ##' @rdname k.qcs
 ##' @method k.qcs default
-##' @inheritParams lab.qcd
+##' @inheritParams lab.qcdata
 ##' @param alpha The significance level (0.05 by default)
 ##' @param ... arguments passed to or from methods.
 k.qcs.default <- function(x, var.index=1,replicate.index  =  2, material.index  =  3,
@@ -244,68 +272,72 @@ k.qcs.default <- function(x, var.index=1,replicate.index  =  2, material.index  
 {
   if (is.null(data.name)) data.name <- "Statistical Mandel k"
   
-  obj<-lab.qcd(data = x, var.index=var.index,replicate.index  =  replicate.index, 
+  obj<-lab.qcdata(data = x, var.index=var.index,replicate.index  =  replicate.index, 
                material.index  =  material.index,
                laboratory.index=laboratory.index,  data.name = data.name)
   
-  result<-k.qcs.lab.qcd(x = obj,  alpha = alpha)
+  result<-k.qcs.lab.qcdata(x = obj,  alpha = alpha)
   
   return(result)
 } #k.qcs
 
 ##' @rdname  k.qcs
-##' @method k.qcs lab.qcd
+##' @method k.qcs lab.qcdata
 ##' @inheritParams k.qcs.default
 ##' @export
-k.qcs.lab.qcd<- function(x, alpha = 0.05, ...)
+k.qcs.lab.qcdata<- function(x, alpha = 0.05, ...)
   {
+
+  if(is.null(x) || !inherits(x, "lab.qcdata"))
+    stop("x must be an objects of class (or extending) 'lab.qcdata'")
+  
   data.name <- attributes(x)$data.name
   x.lab.qcs <- lab.qcs(x)
-  statistics <- x.lab.qcs[[2]]
-  s.i <- x.lab.qcs[[7]]
-  p <- x.lab.qcs[[3]]
-  n <- x.lab.qcs[[4]]
-  m <- x.lab.qcs[[5]]
+  statistics <- x.lab.qcs$statistics.material
+  s.i <- x.lab.qcs$statistics.Laboratory$s.i
+  p <- x.lab.qcs$p
+  n <- x.lab.qcs$n
+  m <- x.lab.qcs$m
   
   v1<-(p-1)*(n-1)
   v2<-n-1
   
-  kcrit<-sqrt(p/(1+(p-1)*qf(alpha,v1,v2,lower.tail=TRUE)))
+  kcrit <- sqrt(p/(1+(p-1)*qf(alpha,v1,v2,lower.tail=TRUE)))
 
   
-  material <- row.names(x.lab.qcs[[2]])
+  material <- row.names(x.lab.qcs$statistics.material)
   laboratory <- unique(x.lab.qcs[[1]]$laboratory)
     k.i<-matrix(,nrow =p ,ncol =m )
-       for(i in 1:m)
+    for(i in 1:m)
     {
-      ind<-x$material==material[i]
-      k.i[,i]<-s.i[,i]/statistics$S_r[i]
+      ind <- x.lab.qcs$statistics.Laboratory$material==material[i]
+      k.i[,i] <- s.i[ind]/statistics$S_r[i]
       }
-    colnames(k.i)<-material
-    row.names(k.i)<-laboratory
-    violations <- k.i<=kcrit
+    colnames(k.i) <- material
+    row.names(k.i) <- laboratory
+    violations <- k.i <= kcrit
     
-    result <- list (lab.qcd = x, lab.qcs = x.lab.qcs, p = p, n = n, m = m,
+    result <- list (lab.qcdata = x, lab.qcs = x.lab.qcs, p = p, n = n, m = m,
                     k = k.i, k.critical = kcrit, violations = violations, data.name = data.name ) 
     oldClass(result) <- c("lab.qcs")
-    attr(result, "object.name") <- "k.qcs"
-    attr(result, "type.data") <- "univariate"
+    attr(result, "object.name") <- data.name
+    attr(result, "type.data") <- "k.qcs"
     
     return(result)
   }
 
 #-------------------------------------------------------------------------
-# Cochram Test Statistic
+# Cochran Test Statistic
 #-------------------------------------------------------------------------
 ##' Function to compute the Grubbs test statistic.
 ##'
-##' Function to estimate the Cochram test statistic.
+##' Function to estimate the Cochran test statistic.
 ##' @param x   R object (used to select the method). See details.
 ##' @export
 ##' @references 
 ##' \describe{
 ##'   \item{}{Wilrich Peter-T. (2013),  Critical values of mandel's h and k, 
-##'   the grubbs and the cochram test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
+##'   the grubbs and the Cochran test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
 ##'   \item{}{ASTM E 691 (1999), Standard practice for conducting an interlaboratory study 
 ##'   to determine the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA.}
 ##' } 
@@ -313,65 +345,87 @@ k.qcs.lab.qcd<- function(x, alpha = 0.05, ...)
 ##' 
 ##' library(ILS)
 ##' data(Glucose)
-##' Glucose.qcd <- lab.qcd(Glucose)
-##' str(Glucose.qcd)
-##' Cochram.test(Glucose.qcd)
-Cochram.test <- function(x, ...) {
-  UseMethod("Cochram.test")
+##' Glucose.qcdata <- lab.qcdata(Glucose)
+##' str(Glucose.qcdata)
+##' cochran.test(Glucose.qcdata)
+cochran.test <- function(x, ...) {
+  UseMethod("cochran.test")
 }
 
-##' @rdname Cochram.test
-##' @method Cochram.test default
-##' @inheritParams lab.qcd
+##' @rdname cochran.test
+##' @method cochran.test default
+##' @inheritParams lab.qcdata
 ##' @param alpha The significance level (0.05 by default)
 ##' @param ... Arguments passed to or from methods.
-Cochram.test.default <- function(x, var.index=1,replicate.index  =  2, material.index  =  3,
+cochran.test.default <- function(x, var.index=1,replicate.index  =  2, material.index  =  3,
                           laboratory.index=4,  data.name = NULL, alpha = 0.05, ...)
 {
   if (is.null(data.name)) data.name <- "Statistical Mandel k"
   
-  obj<-lab.qcd(data = x, var.index=var.index,replicate.index  =  replicate.index, 
+  obj<-lab.qcdata(data = x, var.index=var.index,replicate.index  =  replicate.index, 
                material.index  =  material.index,
                laboratory.index=laboratory.index,  data.name = data.name)
   
-  result<-Cochram.test.lab.qcd(x = obj,  alpha = alpha)
+  result<-cochran.test.lab.qcdata(x = obj,  alpha = alpha)
   
   return(result)
-} #Cochram.test
+} #cochran.test
 
-##' @rdname  Cochram.test
-##' @method Cochram.test lab.qcd
-##' @inheritParams Cochram.test.default
+##' @rdname  cochran.test
+##' @method cochran.test lab.qcdata
+##' @inheritParams cochran.test.default
 ##' @export
-Cochram.test.lab.qcd<-function(x, alpha = 0.05,...){
+cochran.test.lab.qcdata<-function(x, alpha = 0.05,...){
 
+  if(!is.null(x) & !inherits(x, "lab.qcdata") & !is.list(x))
+    stop("x must be an objects of class (or extending) 'lab.qcdata'")
+  
   x.lab.qcs <- lab.qcs(x)
-  material<-row.names(x.lab.qcs$statistics)
+  stat <- x.lab.qcs$statistics.Laboratory
+  material <- row.names(x.lab.qcs$statistics.material)
+  laboratory <- unique(x$laboratory) 
   
-  S.i2 <- x.lab.qcs[[7]]^2
-  p <- x.lab.qcs[[3]]
-  n <- x.lab.qcs[[4]]
-  m <- x.lab.qcs[[5]]
+  S2max <- tapply(stat$s.i,stat$material,max)
+  ind.max <- tapply(stat$s.i,stat$material,which.max)
+  laboratory.max <- laboratory[ind.max]
   
-  S2max <- vector()
+  p <- x.lab.qcs$p
+  n <- x.lab.qcs$n
+  m <- x.lab.qcs$m
+
   C <- vector()
   p.value <- vector()
-
+  
   v1 <- (p-1)*(n-1);
   v2 <- n-1
-  Ccrit <- 1/(1+(p-1)*qf(alpha,v1,v2,lower.tail=TRUE))  
+  Ccrit <- 1/(1+(p-1)*qf(alpha/p,v1,v2,lower.tail=TRUE))  
+  
   
   for(i in 1:m){
-    S2max[i] <- max(S.i2[,i])
-    C[i] <- S2max[i]/sum(S.i2[,i])
+    C[i] <- S2max[i]/sum((stat$s.i[stat$material == material[i]])^2)
     p.value[i] <- round(pf(C[i],v1,v2,lower.tail=T),4)
   }
+  
+  result <- list(result = data.frame(Smax = laboratory.max, Material = material,
+                       C = C,  p.value = p.value),C.critical = Ccrit, alpha.test = alpha/p)
 
-  result <- data.frame(Material = material,C = C, C.critical = Ccrit, p.value = p.value)
-
-  cat("\nTest Cochram:", "\n")
+  
+  oldClass(result) <- c("cochran.test")
+  
     return(result)
 }
+
+# @rdname lab.qcs
+##' @method print cochran.test
+## @param x A \code{test.cochran} object for which a print is desired.
+##' @export
+
+print.cochran.test <- function(x, ...) {
+  cat("\nTest Cochran", "\n") 
+  cat("\n Critical value:",x[[2]],"\n")
+  cat("\n Alpha test:",x[[3]],"\n")
+  print(x[[1]])}
+
 #-------------------------------------------------------------------------
 # Grubbs Test Statistic
 #-------------------------------------------------------------------------
@@ -383,7 +437,7 @@ Cochram.test.lab.qcd<-function(x, alpha = 0.05,...){
 ##' @references 
 ##' \describe{
 ##'   \item{}{Wilrich Peter-T. (2013), Critical values of Mandel's h and k, 
-##'   the Grubbs and the Cochram test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
+##'   the Grubbs and the Cochran test statistic. Asta-Advances in Statistical Analysis, 97(1):1-10.}
 ##'   \item{}{ASTM E 691 (1999), Standard practice for conducting an interlaboratory study 
 ##'   to determine the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA.}
 ##' }
@@ -391,71 +445,99 @@ Cochram.test.lab.qcd<-function(x, alpha = 0.05,...){
 ##' 
 ##' library(ILS)
 ##' data(Glucose)
-##' Glucose.qcd <- lab.qcd(Glucose)
-##' str(Glucose.qcd)
-##' Grubbs.test(Glucose.qcd)
-Grubbs.test <- function(x, ...) {
-  UseMethod("Grubbs.test")
+##' Glucose.qcdata<- lab.qcdata(Glucose)
+##' str(Glucose.qcdata)
+##' grubbs.test(Glucose.qcdata)
+grubbs.test <- function(x, ...) {
+  UseMethod("grubbs.test")
 }
 
-##' @rdname Grubbs.test
-##' @method Grubbs.test default
-##' @inheritParams lab.qcd
+##' @rdname grubbs.test
+##' @method grubbs.test default
+##' @inheritParams lab.qcdata
 ##' @param alpha The significance level (0.05 for default)
 ##' @param ... arguments passed to or from methods.
-Grubbs.test.default <- function(x, var.index=1,replicate.index  =  2, material.index  =  3,
+grubbs.test.default <- function(x, var.index=1,replicate.index  =  2, material.index  =  3,
                           laboratory.index=4,  data.name = NULL, alpha = 0.05, ...)
 {
   if (is.null(data.name)) data.name <- "Statistical Mandel k"
   
-  obj<-lab.qcd(data = x, var.index=var.index,replicate.index  =  replicate.index, 
+  obj<-lab.qcdata(data = x, var.index=var.index,replicate.index  =  replicate.index, 
                material.index  =  material.index,
                laboratory.index=laboratory.index,  data.name = data.name)
   
-  result<-Grubbs.test.lab.qcd(x = obj,  alpha = alpha)
+  result<-grubbs.test.lab.qcdata(x = obj,  alpha = alpha)
   
   return(result)
-} #Grubbs.test
-##' @rdname  Grubbs.test
-##' @method Grubbs.test lab.qcd
-##' @inheritParams Grubbs.test.default
+} #grubbs.test
+
+##' @rdname  grubbs.test
+##' @method grubbs.test lab.qcdata
+##' @inheritParams grubbs.test.default
 ##' @export
-Grubbs.test.lab.qcd <-function(x, alpha = 0.05,...){
+grubbs.test.lab.qcdata <-function(x, alpha = 0.05,...){
   x.lab.qcs <- lab.qcs(x)
-  material <- row.names(x.lab.qcs$statistics)
+  stat <- x.lab.qcs$statistics.Laboratory
+  material <- row.names(x.lab.qcs$statistics.material)
+  laboratory <- unique(x$laboratory) 
+  
+  p <- x.lab.qcs$p
+  n <- x.lab.qcs$n
+  m <- x.lab.qcs$m
+  
 
-  p <- x.lab.qcs[[3]]
-  n <- x.lab.qcs[[4]]
-  m <- x.lab.qcs[[5]]
-
-  mean_max <- vector()
-  mean_min <- vector()
-  mean_mean <- vector()
   
   Gh <- vector()
   Gl <- vector()
   S <- vector()
   ph.value <- vector()
   pl.value <- vector()
+
+  mean.i <- stat$mean.i
+  mean <- x.lab.qcs$statistics.material$mean
+  S <- x.lab.qcs$statistics.material$S
+  
+  
+  
+  ind.max <- tapply(stat$mean.i,stat$material,which.max) 
+  ind.min <- tapply(stat$mean.i,stat$material,which.min)    
+  laboratory.max <- laboratory[ind.max]
+  laboratory.min <- laboratory[ind.min]
+  
   
   for(i in 1:m){
-    mean_mean[i] <- mean(x.lab.qcs$mean.i[,i])
-    S[i] <- sd(x.lab.qcs$mean.i[,i])
-    mean_min[i] <- min(x.lab.qcs$mean.i[,i])
-    Gl[i] <- (mean_mean[i] - mean_min[i])/S[i]
+    
+    Gl[i] <- (mean[i] - mean.i[stat$material == material[i]][ind.min[i]])/S[i]
     pl.value[i] <- round(pt(Gl[i],(p-1),lower.tail=F),4)
-    mean_max[i] <- max(x.lab.qcs$mean.i[,i])
-    Gh[i] <- (mean_max[i]-mean_mean[i])/S[i]
+    Gh[i] <- (mean.i[stat$material == material[i]][ind.max[i]] - mean[i] )/S[i]
     ph.value[i] <- round(pt(Gh[i],(p-1),lower.tail=F),4)
   }
   
   gcrit <- (n-1)*qt((1-alpha/p),(n-2))/sqrt(n*(n-2+(qt((1-alpha/p),(n-2)))^2))
 
-  result <- data.frame(Material = material, G.max = Gh,p.value.max = ph.value,G.min = Gl,
-                       p.value.min = pl.value,G.critical = gcrit)
-  cat("\nTest Grubbs:", "\n")
+  result <- list(result = data.frame(Material = material, Gmax = laboratory.max, 
+                                     G.max = Gh,
+                                     p.value.max = ph.value, Gmin = laboratory.min,
+                                     G.min = Gl,
+                       p.value.min = pl.value),G.critical = gcrit,
+                 alpha.test = alpha/p)
+  
+  oldClass(result) <- c("grubbs.test")  
   return(result)
 }
+
+
+##' @method print grubbs.test
+## @param x A \code{test.cochran} object for which a print is desired.
+##' @export
+
+print.grubbs.test <- function(x, ...) {
+  cat("\nTest Grubbs", "\n") 
+  cat("\n Critical value:",x[[2]],"\n")
+  cat("\n Alpha test:",x[[3]],"\n")
+  print(x[[1]])}
+
+
 
 #-------------------------------------------------------------------------
 # AOV
@@ -463,7 +545,7 @@ Grubbs.test.lab.qcd <-function(x, alpha = 0.05,...){
 ##' Function to compute the AOV
 ##' 
 ##' Function to compute the analysis of variance of ILS data, taking into account the laboratories and material factors.
-##' @param x Object lab.qcd.
+##' @param x Object lab.qcdata.
 ##' @export
 ##' @references 
 ##' \describe{
@@ -475,16 +557,17 @@ Grubbs.test.lab.qcd <-function(x, alpha = 0.05,...){
 ##' \dontrun{
 ##' library(ILS)
 ##' data(Glucose)
-##' Glucose.qcd <- lab.qcd(Glucose)
-##' str(Glucose.qcd)
-##' lab.aov(Glucose.qcd,level = 0.95, plot = TRUE, pages = 1)
+##' Glucose.qcdata <- lab.qcdata(Glucose)
+##' str(Glucose.qcdata)
+##' lab.aov(Glucose.qcdata,level = 0.95, plot = TRUE, pages = 1)
 ##' }
+
 lab.aov <- function(x, ...) {
   UseMethod("lab.aov")
 }
 ##' @rdname lab.aov
 ##' @method lab.aov default
-##' @inheritParams lab.qcd
+##' @inheritParams lab.qcdata
 ##' @param level Requested confidence level (0.95 by default)
 ##' @param plot  If TRUE, confidence intervals are plot.
 ##' @param pages By default 0, it indicates the number of pages over which to spread the output. For example, 
@@ -496,21 +579,21 @@ lab.aov.default <- function(x, var.index=1,replicate.index  =  2, material.index
 {
   if (is.null(data.name)) data.name <- "Statistical Mandel k"
   
-  obj<-lab.qcd(data = x, var.index=var.index,replicate.index  =  replicate.index, 
+  obj<-lab.qcdata(data = x, var.index=var.index,replicate.index  =  replicate.index, 
                material.index  =  material.index,
                laboratory.index=laboratory.index,  data.name = data.name)
   
-  result<-lab.aov.lab.qcd(x = obj,  level = level,plot = plot, pages = pages)
+  result<-lab.aov.lab.qcdata(x = obj,  level = level,plot = plot, pages = pages)
   
   return(result)
 } #lab.aov
 
 
 ##' @rdname lab.aov
-##' @method lab.aov lab.qcd
+##' @method lab.aov lab.qcdata
 ##' @inheritParams lab.aov.default
 ##' @export
-lab.aov.lab.qcd <- function(x,level = 0.95,plot = FALSE, pages = 0,...){
+lab.aov.lab.qcdata <- function(x,level = 0.95,plot = FALSE, pages = 0,...){
 
 aovModel <- list()
 conf <- list()

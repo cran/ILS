@@ -25,4 +25,3 @@
 \description{
 Generic function for plotting objects of 'lab.qcs' class. Results of  univariate ILS studies are graphically shown.
 }
-
