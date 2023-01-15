@@ -7,11 +7,11 @@
 outliers.ils(x, fdep = depth.FM, trim = 0.01)
 }
 \arguments{
-\item{x}{A \code{fdata}}
+\item{x}{An object of classs \code{fdata}.}
 
 \item{fdep}{Type of depth measure, by default depth.mode.}
 
-\item{trim}{The percentaje of the trimming, by default is 1\%}
+\item{trim}{The percentaje of the trimming, by default is 1\%.}
 }
 \description{
 Procedure for detecting funcitonal outliers.

@@ -7,15 +7,15 @@
 \method{plot}{lab.qcdata}(x, xlab = NULL, ylab = NULL, col = "blue", ...)
 }
 \arguments{
-\item{x}{Functional data object or a list with functional objects}
+\item{x}{An object of class \code{lab.qcdata} (Univariate Quality Control Data).}
 
-\item{xlab}{Title for the x axis}
+\item{xlab}{Title for the x axis.}
 
-\item{ylab}{Title for the y axis}
+\item{ylab}{Title for the y axis.}
 
-\item{col}{Color of type material, when there only one}
+\item{col}{Color of type material, when there only one.}
 
-\item{...}{arguments to be passed to or from methods.}
+\item{...}{Other arguments to be passed to or from methods.}
 }
 \description{
 Generic function for plotting objects of 'lab.qcdata' class. Results of  univariate ILS studies are graphically shown.

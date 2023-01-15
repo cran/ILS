@@ -3,7 +3,6 @@
 \docType{package}
 \name{ILS}
 \alias{ILS}
-\alias{ILS-package}
 \title{Interlaboratoty Study}
 \description{
 Interlaboratory Study

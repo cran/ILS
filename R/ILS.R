@@ -28,30 +28,24 @@
 NULL
 
 ##' @title Glucose in Serum
-##'
 ##' @description
 ##' Dataset corresponding to serum glucose (measurements of glucose concentration in blood used to control diabetes) testing.
 ##' Eight laboratories conducted tests to five different blood samples tagged with different references, ranging them from low  sugar content to very high.
 ##' Three replicates were obtained for each sample. It is retrieved from ASTM E 691 standard.
-##'
 ##' @name Glucose
-##'
 ##' @docType data
-##
 ##' @format A data frame with 120 observations composed of the following 4 variables:
 ##' \describe{
-##'   \item{Glucose}{Glucose content in Serum}
-##'   \item{Replicate}{Number of glucose measurement corresponding to each material}
+##'   \item{Glucose}{Glucose content in Serum.}
+##'   \item{Replicate}{Number of glucose measurement corresponding to each material.}
 ##'   \item{Material}{Level of glucose, ranging from low content of sugar to very high level of glucose in blood.}
-##'   \item{Laboratory}{Laboratories conducted tests}
+##'   \item{Laboratory}{Laboratories conducted tests.}
 ##' }
 ##' @keywords datasets
 ##'
 ##' @references
-##' \describe{
-##'   \item{}{ASTM E 691 (1999). Standard  practice  for  conducting  an  interlaboratory  study  to  determine
-##' the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA. }
-##'}
+##' ASTM E 691 (1999). Standard  practice  for  conducting  an  interlaboratory  study  to  determine
+##' the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA.
 ##' @examples
 ##' library(ILS)
 ##' data(Glucose)
@@ -81,12 +75,16 @@ NULL
 ##'
 ##' @format Dataframe of dimension 105 x 44. The first column corresponds to IDT variable, the second (Sample) is the replicate number,
 ##'  the third is the tested material (Material), and fourth is the laboratory.
+##' \describe{
+##'   \item{IDT}{Initial decomposition temperature.}
+##'   \item{Sample}{The replicate number.}
+##'   \item{Run}{Tested material.}
+##'   \item{Laboratory}{Laboratories conducted tests.}
+##' }
 ##'
 ##' @references
-##' \describe{
-##'   \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
-##'   "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-##' }
+##' Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+##' "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
 ##' @examples
 ##' library(ILS)
 ##' data(IDT)
@@ -116,12 +114,13 @@ NULL
 ##'
 ##' @format A 15 x 1000 x 7 dimension array ,  where each matrix consists of the 15 TG curves obtained testing 15 different oxalate samples,
 ##' and evaluated in 1000 different values of temperature. These 15 curves were obtained for each of the overall 7 laboratories that have performed the esperiments.
+##' \describe{
+##'   \item{Vi}{Thermogravimetric.}
+##' }
 ##'
 ##' @references
-##' \describe{
-##'   \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
-##'   "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-##' }
+##' Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+##' "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
 ##' @examples
 ##' library(ILS)
 ##' data(TG)
@@ -133,26 +132,28 @@ NULL
 ##' @title Differential Scanning Calorimetry curves
 ##'
 ##' @description 90 samples of calcium oxalate were analyzed by differential scanning calorimetry technique (DSC),
-##'  obtaining 90 DSC curves showing from an SDT device the difference of heat between a sample and an oxalate reference 
-##'  value depending on the temperature that the samples are heated at a constant temperature rate. 
-##'  The data set consists of 15 TG curves of 1000 observations from each of the 6 laboratories. 
-##'  Laboratory 2 to Laboratory 4 uses the same simultaneous SDT analyzer in similar conditions, 
-##'  Laboratory 6 uses a simultaneous SDT analyzer with an old calibration, and Laboratory 7 uses a simultaneous SDT 
+##'  obtaining 90 DSC curves showing from an SDT device the difference of heat between a sample and an oxalate reference
+##'  value depending on the temperature that the samples are heated at a constant temperature rate.
+##'  The data set consists of 15 TG curves of 1000 observations from each of the 6 laboratories.
+##'  Laboratory 2 to Laboratory 4 uses the same simultaneous SDT analyzer in similar conditions,
+##'  Laboratory 6 uses a simultaneous SDT analyzer with an old calibration, and Laboratory 7 uses a simultaneous SDT
 ##'  analyzer with a calibration (2 degrees Celsius displaced from the zinc melting point).
 ##'
 ##' @name DSC
 ##'
 ##' @docType data
 ##'
-##' @format 5 x 1000 x 6 dimension array, where each matrix consists of the 15 DSC curves obtained by testing 15 different oxalate 
-##' samples, and evaluated at 1000 different temperature values. These 15 curves were obtained for each of the 6 laboratories that 
+##' @format 5 x 1000 x 6 dimension array, where each matrix consists of the 15 DSC curves obtained by testing 15 different oxalate
+##' samples, and evaluated at 1000 different temperature values. These 15 curves were obtained for each of the 6 laboratories that
 ##' performed the experiments.
+##' \describe{
+##'   \item{Xi}{Differential Scanning Calorimetry curves.}
+##' }
 ##'
 ##' @references
-##' \describe{
-##'   \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
-##'   "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-##' }
+##' Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+##' "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
+##' 
 ##' @examples
 ##' library(ILS)
 ##' data(DSC)

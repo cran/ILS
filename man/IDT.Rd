@@ -4,8 +4,16 @@
 \name{IDT}
 \alias{IDT}
 \title{Dataset composed of the initial decomposition temperature (IDT) of different samples of Calcium Oxalate, obtained by 7 different laboratories}
-\format{Dataframe of dimension 105 x 44. The first column corresponds to IDT variable, the second (Sample) is the replicate number,
- the third is the tested material (Material), and fourth is the laboratory.}
+\format{
+Dataframe of dimension 105 x 44. The first column corresponds to IDT variable, the second (Sample) is the replicate number,
+ the third is the tested material (Material), and fourth is the laboratory.
+\describe{
+  \item{IDT}{Initial decomposition temperature.}
+  \item{Sample}{The replicate number.}
+  \item{Run}{Tested material.}
+  \item{Laboratory}{Laboratories conducted tests.}
+}
+}
 \description{
 Initial decomposition temperature (IDT) is a parameter defined by temperature at which a material loss 5\% of its weight
 when it is heated using a constant rate. One hundred and five calcium oxalate samples were tested by thermogravimetric analysis (TG),
@@ -27,8 +35,6 @@ st <- with(IDT, tapply(IDT, list(Run,Laboratory), mean))
 st
 }
 \references{
-\describe{
-  \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
-  "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-}
+Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+"Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
 }

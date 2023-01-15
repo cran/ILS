@@ -14,21 +14,22 @@
 # Main function to create a 'ils.fqcs' object
 #-----------------------------------------------------------------------------#
 ##' It developes an object of class 'ils.fqcs'
-##' 
-##' Create an object of class 'ils.fqcs' to perform statistical quality control. 
+##'
+##' Create an object of class 'ils.fqcs' to perform statistical quality control.
 ##' This function is used to compute requested FDA.
 ##'
 ## @param x  Object ils.fqcdata (Functional Quality Control Data)
 ##' @export
 ##' @references
-##' \describe{
-##'   \item{}{Febrero-Bande, M. and Oviedo, M. (2012),
-##'    "Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.}
-##'   \item{}{Cuevas A., Febrero-Bande, M. and Fraiman, R. (2006), "On the use of the bootstrap for estimating functions with functional data". 
-##'   Computational Statistics & Data Analysis 51, 2, 1063-1074. }
-##'   \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014), 
-##'   "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-##' }
+##' Febrero-Bande, M. and Oviedo, M. (2012),
+##' "Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28
+##' 
+##' Cuevas A., Febrero-Bande, M. and Fraiman, R. (2006), "On the use of the bootstrap for estimating functions with functional data".
+##' Computational Statistics & Data Analysis 51, 2, 1063-1074.
+##' 
+##' Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+##' "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
+##' 
 ##' @examples
 ##' library(ILS)
 ##' data(TG)
@@ -37,7 +38,7 @@
 ##' xlab <- "Temperature/ C"
 ##' ylab <- "Mass/ %"
 ##' fqcstat <- ils.fqcs(fqcdata)
-##' plot(fqcstat, xlab = xlab, ylab = ylab,legend = TRUE) 
+##' plot(fqcstat, xlab = xlab, ylab = ylab,legend = TRUE)
 
 ils.fqcs <- function(x, ...) {
   UseMethod("ils.fqcs")
@@ -46,7 +47,7 @@ ils.fqcs <- function(x, ...) {
 ##' @rdname ils.fqcs
 ##' @method ils.fqcs default
 ##' @inheritParams ils.fqcdata
-##' @param ... Arguments passed to or from methods.
+##' @param ... Other arguments passed to or from methods.
 ils.fqcs.default <- function(x, argvals = NULL, rangeval  = NULL,...)
 {
 
@@ -69,42 +70,42 @@ ils.fqcs.default <- function(x, argvals = NULL, rangeval  = NULL,...)
 ils.fqcs.ils.fqcdata <- function(x, ...)
   #.........................................................................
   {
- 
+
   if(is.null(x) || !inherits(x, "ils.fqcdata"))
     stop("x must be an objects of class (or extending) 'ils.fqcdata'")
-  
-  
+
+
   p <- x$p
   n <- x$n
   m <- x$m
   index <- rep(x$index.laboratory,each = n)
-  
+
   fdata.m <- x$ils.fdata
   S2 <- func.var(fdata.m)
   mean <- func.mean(fdata.m)
   fac <- factor(index)
-  
+
   ldata <- list("df"=data.frame(fac),"fdataobj"=fdata.m)
-  
+
   mean.i <- func.ils.formula(fdataobj~fac, data = ldata, func = func.mean)
   S2.i <- func.ils.formula(fdataobj~fac, data = ldata, func = func.var)
   Sbar <- fdata(apply(mean.i[["data"]], 2,sd))
   S2r <- fdata(apply(S2.i[["data"]], 2,mean))
-  
+
   #Statistics
-  ils.h <- fdata(t(apply(mean.i[["data"]], 1,function(x) 
+  ils.h <- fdata(t(apply(mean.i[["data"]], 1,function(x)
   {(x-mean[["data"]])/Sbar[["data"]]})))
   ils.k<- fdata(t(apply(S2.i[["data"]], 1,function(x)
   {sqrt(x)/sqrt(S2r[["data"]])})))
-  
+
   d_h.m <- c(norm.fdata(ils.h))
   names(d_h.m) <- paste("lab",1:p)
-  
+
   d_k.m <- c(norm.fdata(ils.k))
-  names(d_k.m) <- paste("lab",1:p)   
-  
-  result <- list(fqcdata = x, ils.h = ils.h, ils.k = ils.k, d_h.m = d_h.m, d_k.m = d_k.m, mean = mean, S2 = S2, 
-                 mean.i = mean.i, S2.i = S2.i, Sbar = Sbar, S2r = S2r, 
+  names(d_k.m) <- paste("lab",1:p)
+
+  result <- list(fqcdata = x, ils.h = ils.h, ils.k = ils.k, d_h.m = d_h.m, d_k.m = d_k.m, mean = mean, S2 = S2,
+                 mean.i = mean.i, S2.i = S2.i, Sbar = Sbar, S2r = S2r,
                  p = p, n = n, m = m)
 
   oldClass(result) <- c("ils.fqcs")
@@ -114,46 +115,46 @@ ils.fqcs.ils.fqcdata <- function(x, ...)
 
 #-----------------------------------------------------------------------------#
 ##' Descriptive measures for functional data.
-##' 
+##'
 ##' Central and dispersion measures for functional data.
 #.........................................................................
 ##' @rdname func.ils.formula
-##' @param formula a formula, such as y ~ group, where y is a fdata object 
+##' @param formula A formula, such as y ~ group, where y is a fdata object.
 ##' to be split into groups according to the grouping variable group (usually a factor).
-##' @param data List that containing the variables in the formula. The item called "df" 
+##' @param data List that containing the variables in the formula. The item called "df"
 ##' is a data frame with the grouping variable. The item called "y" is a fdata object.
-##' @param drop logical indicating if levels that do not occur should be dropped (if f is a factor or a list).
+##' @param drop Logical indicating if levels that do not occur should be dropped (if f is a factor or a list).
 ##' @param func  Measures for functional data.
 ##' @export
 #.........................................................................
-func.ils.formula <- function (formula, data = NULL, drop = FALSE, func = func.mean) 
+func.ils.formula <- function (formula, data = NULL, drop = FALSE, func = func.mean)
 {
   tf <- terms.formula(formula)
   fac <- attr(tf, "term.labels")
-  if (attr(tf, "response") > 0) 
+  if (attr(tf, "response") > 0)
     response <- as.character(attr(tf, "variables")[2])
-  if (missing(formula) || (length(formula) != 3L)) 
+  if (missing(formula) || (length(formula) != 3L))
     stop("'formula' missing or incorrect")
   ldata <- data
   data <- ldata$df
-  if (is.null(ldata$df)) 
+  if (is.null(ldata$df))
     stop("'df' element is missing or incorrect")
-  if (is.vector(data)) 
+  if (is.vector(data))
     data <- as.data.frame(data)
-  if (is.matrix(data)) 
+  if (is.matrix(data))
     data <- as.data.frame(data)
   f <- ldata$df[[fac]]
   dat <- ldata[[response]]
-  if (!is.factor(f)) 
+  if (!is.factor(f))
     f <- factor(f)
   nlev <- nlevels(f)
   lev <- levels(f)
-  if (is.matrix(dat$data)) 
+  if (is.matrix(dat$data))
     dat$data <- data.frame(dat$data)
   out <- split(dat$data, f, drop = drop)
-  out2 <- func(fdata(out[[lev[1]]], dat$argvals, dat$rangeval, 
+  out2 <- func(fdata(out[[lev[1]]], dat$argvals, dat$rangeval,
                      dat$names))
-  for (i in 2:nlev) out2 <- c(out2, func(fdata(out[[lev[i]]], 
+  for (i in 2:nlev) out2 <- c(out2, func(fdata(out[[lev[i]]],
                                                dat$argvals, dat$rangeval, dat$names)))
   rownames(out2$data) <- lev
   return(out2)
@@ -162,13 +163,13 @@ func.ils.formula <- function (formula, data = NULL, drop = FALSE, func = func.me
 #.........................................................................
 ##' @rdname ils.fqcs
 ##' @method print ils.fqcs
-##' @param x A \code{ils.fqcs} object for which a print is desired.
+##' @param x An object of class \code{ils.fqcs} for which a print is desired.
 ##' @export
 print.ils.fqcs <- function(x, ...) str(x,1)
 #.........................................................................
 ##' @rdname ils.fqcs
 ##' @method summary ils.fqcs
-##' @param object A \code{ils.fqcs} object for which a summary is desired.
+##' @param object An object of class \code{ils.fqcs} for which a summary is desired.
 ##' @export
 summary.ils.fqcs <- function(object, ...)
   #.........................................................................
@@ -176,15 +177,15 @@ summary.ils.fqcs <- function(object, ...)
 
   if(is.null(object) || !inherits(object, "ils.fqcs"))
     stop("x must be an objects of class (or extending) 'ils.fqcs'")
-  
+
   type.data <- class(object)
- 
+
   p <- object$p
   cat("\nNumber of laboratories: ", p)
   n <- object$n
   cat("\nNumber of replicates: ", n)
-    
-  result <- switch(type.data, 
+
+  result <- switch(type.data,
                    "lab.fqcs" =  {
                      cat("\nSummary of lab.fqcd:\n")
                      print(summary(object$lab.fqcd))
@@ -208,7 +209,7 @@ summary.ils.fqcs <- function(object, ...)
  #-----------------------------------------------------------------------------#
  # Main function to create a 'mandel.fqcs' object
  #-----------------------------------------------------------------------------#
- ##' This function is used to compute the FDA Mandel's h and k statistic.
+ ##' This function is used to compute the FDA Mandel's h and k statistic
  ##'
  ##' It develops an object of 'mandel.fqcs' class to perform statistical quality control analysis.
  ##' This function is used to compute the functional approach of  Mandel's h and k statistic.
@@ -217,14 +218,15 @@ summary.ils.fqcs <- function(object, ...)
  ##' @rdname  mandel.fqcs
  ##' @export
  ##' @references
- ##' \describe{
- ##'   \item{}{Febrero-Bande, M. and Oviedo, M. (2012),
- ##'    "Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.}
- ##'   \item{}{Cuevas A., Febrero-Bande, M. and Fraiman, R. (2006), "On the use of the bootstrap for estimating functions with functional data".
- ##'   Computational Statistics & Data Analysis 51, 2, 1063-1074. }
- ##'   \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
- ##'   "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
- ##' }
+ ##' Febrero-Bande, M. and Oviedo, M. (2012),
+ ##' "Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.
+ ##'  
+ ##'  Cuevas A., Febrero-Bande, M. and Fraiman, R. (2006), "On the use of the bootstrap for estimating functions with functional data".
+ ##'  Computational Statistics & Data Analysis 51, 2, 1063-1074. 
+ ##'  
+ ##'  Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+ ##'  "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
+ ##' 
  ##' @examples
  ##' \dontrun{
  ##' library(ILS)
@@ -244,7 +246,7 @@ summary.ils.fqcs <- function(object, ...)
 mandel.fqcs.default <- function(x, p = NULL, index.laboratory = NULL, argvals = NULL, rangeval = NULL,
                                names = NULL, ...)
 {
- if (!is.array(x) & !is.data.frame(x) & !is.matrix(x) & !class(x)=="ils.fqcdata")
+ if (!is.array(x) & !is.data.frame(x) & !is.matrix(x) & !inherits(x, "ils.fqcdata"))
    stop("object must be a array or a matrix or data.frame or ils.fqcdata")
 
 
@@ -264,13 +266,13 @@ mandel.fqcs.default <- function(x, p = NULL, index.laboratory = NULL, argvals = 
 ##' @param alpha Significance level, by defaul 1\%.
 ##' @param nb The number of bootstrap samples.
 ##' @param smo The smoothing parameter for the bootstrap samples.
-##' @param ... Further arguments passed to or from other methods.
+##' @param ... Other arguments passed to or from other methods.
 ##' @export
 mandel.fqcs.ils.fqcdata<- function(x, fdep = depth.mode, outlier = TRUE, trim = 0.01,
                                   alpha = 0.01, nb = 200, smo = 0.05, ...){
 
 
- if (!is.array(x) & !is.data.frame(x) & !is.matrix(x) & !class(x)=="ils.fqcdata")
+ if (!is.array(x) & !is.data.frame(x) & !is.matrix(x) & !inherits(x, "ils.fqcdata"))
    stop("object must be a array or a matrix or data.frame or ils.fqcdata")
 
  fdata.m <- x$ils.fdata
@@ -356,7 +358,7 @@ mandel.fqcs.ils.fqcdata<- function(x, fdep = depth.mode, outlier = TRUE, trim = 
 ##' Bootstrap samples of a functional statistic
 ##'
 ##' \code{data.bootstrap} provides bootstrap samples for functional data.
-##' @param x A \code{fdata} object.
+##' @param x An object of classs \code{fdata}.
 ##' @param smo The smoothing parameter for the bootstrap samples.
 ##' @export
 boot.sim.set <- function(x, smo = 0.05){
@@ -386,9 +388,9 @@ boot.sim.set <- function(x, smo = 0.05){
 ##' Detecting outliers for functional dataset
 ##'
 ##' Procedure for detecting funcitonal outliers.
-##' @param x A \code{fdata}
+##' @param x An object of classs \code{fdata}.
 ##' @param fdep Type of depth measure, by default depth.mode.
-##' @param trim The percentaje of the trimming, by default is 1\%
+##' @param trim The percentaje of the trimming, by default is 1\%.
 ##' @export
 outliers.ils <- function(x, fdep = depth.FM, trim = 0.01){
 if (!is.numeric(trim) || length(trim) != 1L || !(trim >= 0 & trim < 1))

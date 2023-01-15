@@ -4,16 +4,21 @@
 \name{DSC}
 \alias{DSC}
 \title{Differential Scanning Calorimetry curves}
-\format{5 x 1000 x 6 dimension array, where each matrix consists of the 15 DSC curves obtained by testing 15 different oxalate 
-samples, and evaluated at 1000 different temperature values. These 15 curves were obtained for each of the 6 laboratories that 
-performed the experiments.}
+\format{
+5 x 1000 x 6 dimension array, where each matrix consists of the 15 DSC curves obtained by testing 15 different oxalate
+samples, and evaluated at 1000 different temperature values. These 15 curves were obtained for each of the 6 laboratories that
+performed the experiments.
+\describe{
+  \item{Xi}{Differential Scanning Calorimetry curves.}
+}
+}
 \description{
 90 samples of calcium oxalate were analyzed by differential scanning calorimetry technique (DSC),
- obtaining 90 DSC curves showing from an SDT device the difference of heat between a sample and an oxalate reference 
- value depending on the temperature that the samples are heated at a constant temperature rate. 
- The data set consists of 15 TG curves of 1000 observations from each of the 6 laboratories. 
- Laboratory 2 to Laboratory 4 uses the same simultaneous SDT analyzer in similar conditions, 
- Laboratory 6 uses a simultaneous SDT analyzer with an old calibration, and Laboratory 7 uses a simultaneous SDT 
+ obtaining 90 DSC curves showing from an SDT device the difference of heat between a sample and an oxalate reference
+ value depending on the temperature that the samples are heated at a constant temperature rate.
+ The data set consists of 15 TG curves of 1000 observations from each of the 6 laboratories.
+ Laboratory 2 to Laboratory 4 uses the same simultaneous SDT analyzer in similar conditions,
+ Laboratory 6 uses a simultaneous SDT analyzer with an old calibration, and Laboratory 7 uses a simultaneous SDT
  analyzer with a calibration (2 degrees Celsius displaced from the zinc melting point).
 }
 \examples{
@@ -23,8 +28,6 @@ summary(DSC)
 
 }
 \references{
-\describe{
-  \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
-  "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-}
+Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+"Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
 }

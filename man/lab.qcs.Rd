@@ -14,11 +14,11 @@ lab.qcs(x, ...)
 \method{summary}{lab.qcs}(object, ...)
 }
 \arguments{
-\item{x}{Object lab.qcdata (Functional Quality Control Data)}
+\item{x}{An object of class \code{lab.qcs} for which a print is desired.}
 
-\item{...}{Arguments passed to or from methods.}
+\item{...}{Other arguments passed to or from methods.}
 
-\item{object}{A \code{lab.qcs} object for which a summary is desired.}
+\item{object}{An object of class \code{lab.qcs} for which a summary is desired.}
 }
 \description{
 It develops an object of \code{lab.qcs}-code{link{class}} to perform statistical quality control.

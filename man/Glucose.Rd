@@ -4,13 +4,15 @@
 \name{Glucose}
 \alias{Glucose}
 \title{Glucose in Serum}
-\format{A data frame with 120 observations composed of the following 4 variables:
+\format{
+A data frame with 120 observations composed of the following 4 variables:
 \describe{
-  \item{Glucose}{Glucose content in Serum}
-  \item{Replicate}{Number of glucose measurement corresponding to each material}
+  \item{Glucose}{Glucose content in Serum.}
+  \item{Replicate}{Number of glucose measurement corresponding to each material.}
   \item{Material}{Level of glucose, ranging from low content of sugar to very high level of glucose in blood.}
-  \item{Laboratory}{Laboratories conducted tests}
-}}
+  \item{Laboratory}{Laboratories conducted tests.}
+}
+}
 \description{
 Dataset corresponding to serum glucose (measurements of glucose concentration in blood used to control diabetes) testing.
 Eight laboratories conducted tests to five different blood samples tagged with different references, ranging them from low  sugar content to very high.
@@ -29,9 +31,7 @@ st
 
 }
 \references{
-\describe{
-  \item{}{ASTM E 691 (1999). Standard  practice  for  conducting  an  interlaboratory  study  to  determine
-the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA. }
-}
+ASTM E 691 (1999). Standard  practice  for  conducting  an  interlaboratory  study  to  determine
+the precision of a test method. American Society for Testing and Materials. West Conshohocken, PA, USA.
 }
 \keyword{datasets}

@@ -4,28 +4,27 @@
 \alias{plot.ils.fqcs}
 \title{Plotting method for 'ils.fqcs' objects}
 \usage{
-\method{plot}{ils.fqcs}(x, type = "l", xlab = NULL, ylab = NULL,
-  legend = TRUE, col = NULL, ...)
+\method{plot}{ils.fqcs}(x, type = "l", xlab = NULL, ylab = NULL, legend = TRUE, col = NULL, ...)
 }
 \arguments{
-\item{x}{Object functional data or a list with objects of functional data type}
+\item{x}{An object of class \code{ils.fqcs} (Functional Quality Control Statistics).}
 
 \item{type}{1-character string giving the type of plot desired.
 The following values are possible for fdata class object: "l" for lines (by default),
-"p" for points, , "o" for overplotted points and lines, "b", "c" for (empty if "c") 
-points joined by lines, "s" and "S" for stair steps and "h" for histogram-like 
+"p" for points, , "o" for overplotted points and lines, "b", "c" for (empty if "c")
+points joined by lines, "s" and "S" for stair steps and "h" for histogram-like
 vertical lines. Finally, "n" does not produce any points or lines.
 The following values are possible for fdata2d class object: "image.contour" (by default) to display three-dimensional data and add the contour lines, "image" to display three-dimensional data, "contour" to display a contour plot, "persp" to display a perspective plots of a surface over the x-y plane and "filled.contour" to display a contour plot with the areas between the contours filled in solid color.}
 
-\item{xlab}{Title for the x axis}
+\item{xlab}{Title for the x axis.}
 
-\item{ylab}{Title for the y axis}
+\item{ylab}{Title for the y axis.}
 
 \item{legend}{Logical argument. Default is TRUE then The legend default is used.}
 
-\item{col}{Color specifications}
+\item{col}{Color specifications.}
 
-\item{...}{arguments to be passed to or from methods}
+\item{...}{Other arguments to be passed to or from methods.}
 }
 \description{
 Generic function to plot objects of 'ils.fqcs' class. Results of functional ILS studies are graphically shown.
@@ -38,13 +37,12 @@ fqcdata <- ils.fqcdata(TG, p = 7, argvals = delta)
 xlab <- "Temperature/ C"
 ylab <- "Mass/ \%"
 fqcstat <- ils.fqcs(fqcdata)
-plot(fqcstat, xlab = xlab, ylab = ylab,legend = TRUE) 
+plot(fqcstat, xlab = xlab, ylab = ylab,legend = TRUE)
 }
 \references{
-\describe{
-  \item{}{Febrero-Bande, M. and Oviedo, M. (2012),
-   "Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.}
-  \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014), 
-  "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-}
+Febrero-Bande, M. and Oviedo, M. (2012),
+"Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.
+
+Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+  "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
 }

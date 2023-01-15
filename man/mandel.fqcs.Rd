@@ -4,32 +4,47 @@
 \alias{mandel.fqcs}
 \alias{mandel.fqcs.default}
 \alias{mandel.fqcs.ils.fqcdata}
-\title{This function is used to compute the FDA Mandel's h and k statistic.}
+\title{This function is used to compute the FDA Mandel's h and k statistic}
 \usage{
 mandel.fqcs(x, ...)
 
-\method{mandel.fqcs}{default}(x, p = NULL, index.laboratory = NULL,
-  argvals = NULL, rangeval = NULL, names = NULL, ...)
+\method{mandel.fqcs}{default}(
+  x,
+  p = NULL,
+  index.laboratory = NULL,
+  argvals = NULL,
+  rangeval = NULL,
+  names = NULL,
+  ...
+)
 
-\method{mandel.fqcs}{ils.fqcdata}(x, fdep = depth.mode, outlier = TRUE,
-  trim = 0.01, alpha = 0.01, nb = 200, smo = 0.05, ...)
+\method{mandel.fqcs}{ils.fqcdata}(
+  x,
+  fdep = depth.mode,
+  outlier = TRUE,
+  trim = 0.01,
+  alpha = 0.01,
+  nb = 200,
+  smo = 0.05,
+  ...
+)
 }
 \arguments{
-\item{x}{A (n x m) matrix or data-frame. 
-The m is the number of points observed in each curve, 
-and n is the number of curves for each laboratory.}
+\item{x}{A \code{(n x m)} matrix or data-frame.
+The \code{m} is the number of points observed in each curve,
+and \code{n} is the number of curves for each laboratory.}
 
-\item{...}{Further arguments passed to or from other methods.}
+\item{...}{Other arguments passed to or from other methods.}
 
-\item{p}{the number of laboratories.}
+\item{p}{The number of laboratories.}
 
-\item{index.laboratory}{is the laboratory index. The index.laboratory length should be equal a p}
+\item{index.laboratory}{The laboratory index. The index laboratory length should be equal a \code{p}.}
 
-\item{argvals}{Argvals, by default: 1:m.}
+\item{argvals}{Argvals, by default: \code{1:m}.}
 
-\item{rangeval}{Range of discretization points, by default: range(argvals).}
+\item{rangeval}{The range of discretization points, by default: range(argvals).}
 
-\item{names}{(optional) list with tree components: main an overall title, 
+\item{names}{Optional. A list with tree components: main an overall title,
 xlab title for x axis and ylab title for y axis.}
 
 \item{fdep}{Type of depth measure, by default depth.mode.}
@@ -60,12 +75,12 @@ plot(mandel.tg,legend = F,col=c(rep(3,5),1,1))
   }
 }
 \references{
-\describe{
-  \item{}{Febrero-Bande, M. and Oviedo, M. (2012),
-   "Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.}
-  \item{}{Cuevas A., Febrero-Bande, M. and Fraiman, R. (2006), "On the use of the bootstrap for estimating functions with functional data".
-  Computational Statistics & Data Analysis 51, 2, 1063-1074. }
-  \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
-  "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-}
+Febrero-Bande, M. and Oviedo, M. (2012),
+"Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.
+ 
+ Cuevas A., Febrero-Bande, M. and Fraiman, R. (2006), "On the use of the bootstrap for estimating functions with functional data".
+ Computational Statistics & Data Analysis 51, 2, 1063-1074. 
+ 
+ Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+ "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
 }

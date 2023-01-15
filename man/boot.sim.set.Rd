@@ -7,7 +7,7 @@
 boot.sim.set(x, smo = 0.05)
 }
 \arguments{
-\item{x}{A \code{fdata} object.}
+\item{x}{An object of classs \code{fdata}.}
 
 \item{smo}{The smoothing parameter for the bootstrap samples.}
 }

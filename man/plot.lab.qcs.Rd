@@ -4,24 +4,30 @@
 \alias{plot.lab.qcs}
 \title{Plot method for 'lab.qcs' objects}
 \usage{
-\method{plot}{lab.qcs}(x, title = NULL, xlab = NULL, ylab = NULL,
-  col = NULL, ylim = NULL, ...)
+\method{plot}{lab.qcs}(x, title = NULL, xlab = NULL, ylab = NULL, col = NULL, ylim = NULL, ...)
 }
 \arguments{
-\item{x}{Functional data object or a list with functional objects}
+\item{x}{An object of class \code{lab.qcs} (Univariate Quality Control Statistics).}
 
-\item{title}{Main title for the plot}
+\item{title}{Main title for the plot.}
 
-\item{xlab}{Title for the x axis}
+\item{xlab}{Title for the x axis.}
 
-\item{ylab}{Title for the y axis}
+\item{ylab}{Title for the y axis.}
 
-\item{col}{Color specifications}
+\item{col}{Color specifications.}
 
-\item{ylim}{Numeric vectors of length 2 (coordinates ranges)}
+\item{ylim}{A Numeric vectors of length 2 (coordinates ranges).}
 
-\item{...}{arguments to be passed to or from methods.}
+\item{...}{Other arguments to be passed to or from methods.}
 }
 \description{
 Generic function for plotting objects of 'lab.qcs' class. Results of  univariate ILS studies are graphically shown.
+}
+\examples{
+library(ILS)
+data(Glucose)
+Glucose.qcdata <- lab.qcdata(Glucose)
+Glucose.qcs <- lab.qcs(Glucose.qcdata)
+plot(Glucose.qcs)
 }

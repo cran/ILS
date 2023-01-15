@@ -7,13 +7,13 @@
 func.ils.formula(formula, data = NULL, drop = FALSE, func = func.mean)
 }
 \arguments{
-\item{formula}{a formula, such as y ~ group, where y is a fdata object 
+\item{formula}{A formula, such as y ~ group, where y is a fdata object.
 to be split into groups according to the grouping variable group (usually a factor).}
 
-\item{data}{List that containing the variables in the formula. The item called "df" 
+\item{data}{List that containing the variables in the formula. The item called "df"
 is a data frame with the grouping variable. The item called "y" is a fdata object.}
 
-\item{drop}{logical indicating if levels that do not occur should be dropped (if f is a factor or a list).}
+\item{drop}{Logical indicating if levels that do not occur should be dropped (if f is a factor or a list).}
 
 \item{func}{Measures for functional data.}
 }

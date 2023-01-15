@@ -8,35 +8,43 @@
 \usage{
 lab.aov(x, ...)
 
-\method{lab.aov}{default}(x, var.index = 1, replicate.index = 2,
-  material.index = 3, laboratory.index = 4, data.name = NULL,
-  level = 0.95, plot = FALSE, pages = 0, ...)
+\method{lab.aov}{default}(
+  x,
+  var.index = 1,
+  replicate.index = 2,
+  material.index = 3,
+  laboratory.index = 4,
+  data.name = NULL,
+  level = 0.95,
+  plot = FALSE,
+  pages = 0,
+  ...
+)
 
-\method{lab.aov}{lab.qcdata}(x, level = 0.95, plot = FALSE, pages = 0,
-  ...)
+\method{lab.aov}{lab.qcdata}(x, level = 0.95, plot = FALSE, pages = 0, ...)
 }
 \arguments{
-\item{x}{Object lab.qcdata.}
+\item{x}{An object of class \code{lab.qcdata} (Univariate Quality Control Data).}
 
-\item{...}{Arguments passed to or from methods.}
+\item{...}{Other arguments passed to or from methods.}
 
-\item{var.index}{Scalar with the column number corresponding to the observed variable (the critical to quality variable). 
-Alternatively, a string with the name of a quality variable can be provided.}
+\item{var.index}{A scalar with the column number corresponding to the observed variable (the critical to quality variable).
+Alternativelly can be a string with the name of the quality variable.}
 
-\item{replicate.index}{Scalar with the column number corresponding to the index each replicate.}
+\item{replicate.index}{A scalar with the column number corresponding to the index each replicate.}
 
-\item{material.index}{Scalar corresponding to the replicated number.}
+\item{material.index}{A scalar corresponding to the replicated number.}
 
-\item{laboratory.index}{Scalar that defines the index number of each laboratory.}
+\item{laboratory.index}{A scalar that defines the index number of each laboratory.}
 
-\item{data.name}{String specifying the name of the variable which appears on the plots. 
-If name is not provided, it is retrieved from the object.}
+\item{data.name}{A string specifying the name of the variable which appears on the plots.
+If name is not provided, it is taken from the object given as data.}
 
-\item{level}{Requested confidence level (0.95 by default)}
+\item{level}{Requested confidence level (0.95 by default).}
 
 \item{plot}{If TRUE, confidence intervals are plot.}
 
-\item{pages}{By default 0, it indicates the number of pages over which to spread the output. For example, 
+\item{pages}{By default 0, it indicates the number of pages over which to spread the output. For example,
 if pages=1,  all terms will be plotted on one page with the layout performed automatically.
  If pages=0, one plot will be displayed by each tested material.}
 }
@@ -53,9 +61,8 @@ lab.aov(Glucose.qcdata,level = 0.95, plot = TRUE, pages = 1)
 }
 }
 \references{
-\describe{
-  \item{}{WHothorn T., Bretz, F., and Westfall, P. (2008), Simultaneous inference in general parametric models. 
-  Biometrical Journal, 50(3):346-363.}
-  \item{}{Heyden, Y., Smeyers-Verbeke, J. (2007), Set-up and evaluation of interlaboratory studies. J. Chromatogr. A, 1158:158-167.}
-}
+WHothorn T., Bretz, F., and Westfall, P. (2008), Simultaneous inference in general parametric models.
+Biometrical Journal, 50(3):346-363.
+
+Heyden, Y., Smeyers-Verbeke, J. (2007), Set-up and evaluation of interlaboratory studies. J. Chromatogr. A, 1158:158-167.
 }

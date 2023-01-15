@@ -4,27 +4,33 @@
 \alias{ils.fqcdata}
 \title{Functional Quality Control Data}
 \usage{
-ils.fqcdata(x, p = NULL, index.laboratory = NULL, argvals = NULL,
-  rangeval = NULL, names = NULL)
+ils.fqcdata(
+  x,
+  p = NULL,
+  index.laboratory = NULL,
+  argvals = NULL,
+  rangeval = NULL,
+  names = NULL
+)
 }
 \arguments{
-\item{x}{A (n x m) matrix or data-frame. 
-The m is the number of points observed in each curve, 
-and n is the number of curves for each laboratory.}
+\item{x}{A \code{(n x m)} matrix or data-frame.
+The \code{m} is the number of points observed in each curve,
+and \code{n} is the number of curves for each laboratory.}
 
-\item{p}{the number of laboratories.}
+\item{p}{The number of laboratories.}
 
-\item{index.laboratory}{is the laboratory index. The index.laboratory length should be equal a p}
+\item{index.laboratory}{The laboratory index. The index laboratory length should be equal a \code{p}.}
 
-\item{argvals}{Argvals, by default: 1:m.}
+\item{argvals}{Argvals, by default: \code{1:m}.}
 
-\item{rangeval}{Range of discretization points, by default: range(argvals).}
+\item{rangeval}{The range of discretization points, by default: range(argvals).}
 
-\item{names}{(optional) list with tree components: main an overall title, 
+\item{names}{Optional. A list with tree components: main an overall title,
 xlab title for x axis and ylab title for y axis.}
 }
 \description{
-It Creates an object of class 'ils.fqcd' to perform statistical quality control. 
+It Creates an object of class 'ils.fqcd' to perform statistical quality control.
 This object is used to plot functional data.
 }
 \examples{
@@ -38,10 +44,9 @@ main <- "TG curves obtained from calcium oxalate"
 plot(x = fqcdata, main = main, xlab=xlab, ylab=xlab,col = 1:7,legend = TRUE)
 }
 \references{
-\describe{
-  \item{}{Febrero-Bande, M. and Oviedo, M. (2012),
-   "Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.}
-  \item{}{Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014), 
-  "Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.}
-}
+Febrero-Bande, M. and Oviedo, M. (2012),
+"Statistical computing in functional data analysis: the R package fda.usc". Journal of Statistical Software 51 (4), 1-28.
+
+Naya, S., Tarrio-Saavedra. J., Lopez- Beceiro, J., Francisco Fernandez, M., Flores, M. and  Artiaga, R. (2014),
+Statistical functional approach for interlaboratory studies with thermal data". Journal of Thermal Analysis and Calorimetry, 118,1229-1243.
 }
